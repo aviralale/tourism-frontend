@@ -51,20 +51,20 @@ export const logoutUser = async () => {
       throw new Error("No refresh token found.");
     }
 
-    const response = await axios.post(
-      "http://127.0.0.1:8000/api/users/logout/",
-      { refresh_token: refreshToken },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    // const response = await axios.post(
+    //   "http://127.0.0.1:8000/api/users/logout/",
+    //   { refresh_token: refreshToken },
+    //   {
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //   }
+    // );
 
     // Remove tokens from local storage upon successful logout
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
-
+    localStorage.removeItem("username");
     return response;
   } catch (error) {
     throw error; // Propagate the error to handle it in the component

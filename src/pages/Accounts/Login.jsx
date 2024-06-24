@@ -33,7 +33,7 @@ export default function Login() {
   
           localStorage.setItem("access_token", access);
           localStorage.setItem("refresh_token", refresh);
-  
+          localStorage.setItem("username", username);
           toast.success('Logged in successfully.');
           navigate("/");
         } else {
