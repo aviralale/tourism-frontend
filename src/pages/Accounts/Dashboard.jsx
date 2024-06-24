@@ -1,7 +1,7 @@
-// src/components/Dashboard.js
 import React from 'react';
-import { logoutUser } from '@/auth/api';
-function Dashboard({ userProfile }) {
+import { logoutUser } from '@/auth/api'; // Adjust the path accordingly
+
+const Dashboard = () => {
   const handleLogout = async () => {
     try {
       await logoutUser();
@@ -15,11 +15,11 @@ function Dashboard({ userProfile }) {
 
   return (
     <div>
-      <h1>Welcome, {userProfile ? userProfile.user.username : "User"}!</h1>
+      <h1>Dashboard</h1>
+      <button onClick={handleLogout}>Logout</button>
       {/* Other dashboard content */}
-      <button onClick={handleLogout}>logout</button>
     </div>
   );
-}
+};
 
 export default Dashboard;
