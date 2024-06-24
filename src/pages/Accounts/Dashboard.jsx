@@ -1,25 +1,21 @@
+// src/components/Dashboard.js
 import React from 'react';
-import { logoutUser } from '@/auth/api'; // Adjust the path accordingly
+import { LogoutButton } from '../components/Accounts/LogoutButton';
 
-const Dashboard = () => {
-  const handleLogout = async () => {
-    try {
-      await logoutUser();
-      // Optionally redirect or perform other actions after successful logout
-      console.log("Logged out successfully.");
-    } catch (error) {
-      console.error("Error logging out:", error);
-      // Handle error as needed, such as showing an error message to the user
-    }
-  };
+function Dashboard({ userProfile }) {
+  if (!userProfile) {
+    return <div>Loading...</div>; // Or any loading indicator you prefer
+  }
 
   return (
     <div>
-      <h1>Dashboard</h1>
-      <button onClick={handleLogout}>Logout</button>
-      {/* Other dashboard content */}
+      <img src={`http://127.0.0.1:8000${userProfile.user.pfp}`} alt={userProfile.user.username} />
+      <h1>Welcome, {userProfile.user.first_name} {userProfile.user.last_name}!</h1>
+      <p>@{userProfile.user.username}</p>
+      <p>{userProfile.is_guide ? "Guide" : userProfile.is_event_manager ? "Event Manager" : "Tourist"}</p>
+      <LogoutButton />
     </div>
   );
-};
+}
 
 export default Dashboard;

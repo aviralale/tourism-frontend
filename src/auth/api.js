@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export const registerUser = async (formData) => {
   const response = await axios.post(
@@ -44,29 +45,51 @@ export const loginUser = async (formData) => {
 };
 
 
-export const logoutUser = async () => {
-  try {
-    const refreshToken = localStorage.getItem("refresh_token");
-    if (!refreshToken) {
-      throw new Error("No refresh token found.");
-    }
+export const useLogoutUser = () => {
+  const navigate = useNavigate();
 
-    const response = await axios.post(
-      "http://127.0.0.1:8000/api/users/logout/",
-      { refresh_token: refreshToken },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
+  const logoutUser = async () => {
+    try {
+      const refreshToken = localStorage.getItem("refresh_token");
+      const accessToken = localStorage.getItem("access_token");
+
+      if (!refreshToken || !accessToken) {
+        throw new Error("No tokens found.");
       }
-    );
 
-    // Remove tokens from local storage upon successful logout
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
+      const response = await axios.post(
+        "http://127.0.0.1:8000/api/users/logout/",
+        { refresh_token: refreshToken },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${accessToken}`
+          },
+        }
+      );
 
-    return response;
-  } catch (error) {
-    throw error; // Propagate the error to handle it in the component
-  }
+      // Remove tokens from local storage upon successful logout
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
+
+      // Navigate to home page
+      navigate('/');
+
+      return response.data.message; // Return the success message
+    } catch (error) {
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        throw new Error(error.response.data.error || "Logout failed");
+      } else if (error.request) {
+        // The request was made but no response was received
+        throw new Error("No response received from server");
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        throw new Error("Error setting up the request");
+      }
+    }
+  };
+
+  return logoutUser;
 };

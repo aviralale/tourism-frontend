@@ -4,15 +4,16 @@ import Register from "./Register";
 import Login from "./Login";
 import Dashboard from "./Dashboard";
 import useAuthCheck from "@/utils/hooks/withAuthCheck";
-function Account() {
-  const isAuthenticated = useAuthCheck();
 
-  if (isAuthenticated === null) {
+function Account() {
+  const { isAuthenticated, userProfile, isLoading } = useAuthCheck();
+
+  if (isLoading) {
     return <div>Loading...</div>;
   }
 
   return isAuthenticated ? (
-    <Dashboard />
+    <Dashboard userProfile={userProfile} />
   ) : (
     <>
       <Tabs
