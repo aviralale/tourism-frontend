@@ -1,22 +1,12 @@
 // src/pages/Events/Events.jsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { logoutUser } from '@/auth/api'; // Adjust the path accordingly
 
 const Events = () => {
   const [events, setEvents] = useState([]);
   const [error, setError] = useState(null);
   const navigate = useNavigate(); // Use the navigate hook
-
-  const handleLogout = async () => {
-    try {
-      await logoutUser();
-      console.log("Logged out successfully.");
-    } catch (error) {
-      console.error("Error logging out:", error);
-    }
-  };
 
   const fetchData = async () => {
     try {
@@ -39,7 +29,7 @@ const Events = () => {
 
   return (
     <div>
-      <h1>Dashboard</h1>
+      <h1>Events</h1>
       {error && <p style={{ color: 'red' }}>{error}</p>}
       {events.length > 0 ? (
         <div>
@@ -73,7 +63,6 @@ const Events = () => {
       ) : (
         <p>No events available</p>
       )}
-      <button onClick={handleLogout}>Logout</button>
     </div>
   );
 };

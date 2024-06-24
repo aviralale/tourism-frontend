@@ -19,7 +19,7 @@ export default function Navbar() {
   const isAuthenticated = useAuthCheck();
   return (
     <div className="flex justify-center">
-      <ul className="nav-links px-5 py-2 transition-all shadow-sm hover:shadow-lg flex gap-8 absolute bottom-10">
+      <ul className="nav-links px-5 py-2 transition-all shadow-sm hover:shadow-lg flex gap-8 fixed bottom-10">
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
