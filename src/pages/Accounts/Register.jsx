@@ -2,18 +2,14 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { registerUser } from "@/auth/api";
 import { validateReg } from "@/auth/validate";
-import {useRegisterForm} from "@/auth/useForm";
 import { toast } from "sonner";
+import { useRegisterForm } from "@/auth/useForm"; // Assuming this hook handles form state
+
 export default function Register() {
-  const [formData, handleChange, setFormData] = useRegisterForm({
+  const [formData, handleChange] = useRegisterForm({
     firstName: "",
     lastName: "",
     username: "",
@@ -34,15 +30,15 @@ export default function Register() {
       try {
         const response = await registerUser(formData);
         setLoading(false);
-        if (response.status === 201) {
-          toast.success("Account created successfully.");
-          navigate("/login");
+        if (response) {
+          toast.success("Account created successfully. Click on the login tab to login.");
+          navigate("/account");
         } else {
           toast.error("Failed to create account.");
         }
       } catch (error) {
         setLoading(false);
-        toast.error("Error:", error);
+        toast.error(`Error: ${error.message}`);
         setErrors({
           apiError:
             error.response?.data?.detail ||
@@ -61,7 +57,7 @@ export default function Register() {
       </h1>
       <form
         onSubmit={handleSubmit}
-        encType="multipart/form-data"
+        encType="multipart/form-data" // Remove this line if not using multipart
         className="flex flex-col border shadow-lg border-black px-10 py-8 rounded-lg"
       >
         <div className="mb-3">

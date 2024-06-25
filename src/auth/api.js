@@ -2,28 +2,32 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 export const registerUser = async (formData) => {
-  const response = await axios.post(
-    "http://127.0.0.1:8000/api/users/signup/",
-    {
-      first_name: formData.firstName,
-      last_name: formData.lastName,
-      username: formData.username,
-      email: formData.email,
-      password: formData.password,
-      is_guide: formData.isGuide,
-      is_event_manager: formData.isEventManager,
-      pfp: null,
-    },
-    {
-      headers: {
-        "Content-Type": "application/json",
+  try {
+    const response = await axios.post(
+      "http://127.0.0.1:8000/api/users/signup/", // Adjust the URL according to your actual API endpoint
+      {
+        user: {
+          email: formData.email,
+          username: formData.username,
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          password: formData.password,
+          is_guide: formData.isGuide,
+          is_event_manager: formData.isEventManager,
+          pfp: null,
+        },
       },
-    }
-  );
-  return response;
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data; // Return only the data part of the response
+  } catch (error) {
+    throw new Error(error.response?.data?.error || "Registration failed"); // Propagate specific error message
+  }
 };
-
-
 export const loginUser = async (formData) => {
   try {
     const response = await axios.post(
@@ -38,12 +42,24 @@ export const loginUser = async (formData) => {
         },
       }
     );
-    return response; // Ensure you're returning the entire response object
+
+    // Assuming response.data structure is { access: <token>, refresh: <token>, username: <username> }
+    const { access, refresh, username } = response.data;
+
+    // Store tokens in localStorage
+    localStorage.setItem("access_token", access);
+    localStorage.setItem("refresh_token", refresh);
+
+    // Store username if available
+    if (username) {
+      localStorage.setItem("username", username);
+    }
+
+    return response.data; // Return response data
   } catch (error) {
-    throw error; // Propagate the error to handle it in the component
+    throw new Error(error.response?.data?.detail || "Login failed"); // Propagate specific error message
   }
 };
-
 
 export const useLogoutUser = () => {
   const navigate = useNavigate();
@@ -63,7 +79,7 @@ export const useLogoutUser = () => {
         {
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${accessToken}`
+            Authorization: `Bearer ${accessToken}`,
           },
         }
       );
@@ -73,7 +89,7 @@ export const useLogoutUser = () => {
       localStorage.removeItem("refresh_token");
 
       // Navigate to home page
-      navigate('/');
+      navigate("/");
 
       return response.data.message; // Return the success message
     } catch (error) {

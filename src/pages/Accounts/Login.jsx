@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,27 +24,16 @@ export default function Login() {
       try {
         const response = await loginUser(formData);
         setLoading(false);
-        
-        // console.log("Response status:", response.status);
-        // console.log("Response data:", response.data);
-  
-        if (response.status === 200) {
-          const { access, refresh } = response.data;
-  
-          localStorage.setItem("access_token", access);
-          localStorage.setItem("refresh_token", refresh);
-          localStorage.setItem("username", username);
-          toast.success('Logged in successfully.');
+
+        if (response) {
+          toast.success("Logged in successfully.");
           navigate("/");
         } else {
-          toast.error('Failed to login. Please check your credentials.');
+          toast.error("Failed to login. Please check your credentials.");
         }
       } catch (error) {
         setLoading(false);
-        // console.error("Error:", error);
-  
         toast.error("Error: " + error.message);
-  
         setErrors({
           apiError:
             error.response?.data?.detail ||
@@ -58,16 +47,42 @@ export default function Login() {
 
   return (
     <div className="flex flex-col mt-5">
-      <h1 className="text-4xl text-center uppercase font-bold mb-5">Login 🚀</h1>
-      <form onSubmit={handleSubmit} encType="multipart/form-data" className="flex flex-col border shadow-lg border-black px-10 py-8 rounded-lg">
+      <h1 className="text-4xl text-center uppercase font-bold mb-5">
+        Login 🚀
+      </h1>
+      <form
+        onSubmit={handleSubmit}
+        encType="multipart/form-data"
+        className="flex flex-col border shadow-lg border-black px-10 py-8 rounded-lg"
+      >
         <div className="mb-3">
-          <Input id="email" className="min-w-[280px]" type="email" placeholder="Email" value={formData.email} onChange={handleChange} />
-          {errors.email && <p className="text-red-500 font-thin">{errors.email}</p>}
+          <Input
+            id="email"
+            className="min-w-[280px]"
+            type="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={handleChange}
+          />
+          {errors.email && (
+            <p className="text-red-500 font-thin">{errors.email}</p>
+          )}
         </div>
         <div className="mb-3">
-          <Input id="password" className="min-w-[280px]" type="password" placeholder="Enter your password" value={formData.password} onChange={handleChange} />
-          {errors.password && <p className="text-red-500 font-thin">{errors.password}</p>}
-          {errors.apiError && <p className="text-red-500 font-thin">{errors.apiError}</p>}
+          <Input
+            id="password"
+            className="min-w-[280px]"
+            type="password"
+            placeholder="Enter your password"
+            value={formData.password}
+            onChange={handleChange}
+          />
+          {errors.password && (
+            <p className="text-red-500 font-thin">{errors.password}</p>
+          )}
+          {errors.apiError && (
+            <p className="text-red-500 font-thin">{errors.apiError}</p>
+          )}
         </div>
         <div className="mb-3">
           <Button type="submit" className="min-w-[280px]" disabled={loading}>

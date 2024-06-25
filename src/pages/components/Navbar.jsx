@@ -7,17 +7,22 @@ import "./Navbar.css";
 
 export default function Navbar() {
   const { isAuthenticated, userProfile, isLoading } = useAuthCheck();
-
+  console.log(isAuthenticated);
   const renderAvatar = () => {
-    if (!isAuthenticated || !userProfile || isLoading) {
+    if (!isAuthenticated || isLoading || !userProfile) {
       return <UserRound />;
     }
 
-    const initials = `${userProfile.user.first_name.charAt(0)}${userProfile.user.last_name.charAt(0)}`.toUpperCase();
+    const initials = `${userProfile.user.first_name.charAt(
+      0
+    )}${userProfile.user.last_name.charAt(0)}`.toUpperCase();
+    const avatarSrc = userProfile.user.pfp
+      ? `http://127.0.0.1:8000${userProfile.user.pfp}`
+      : "http://127.0.0.1:8000/media/user_avatar/default.jpg";
 
     return (
-      <Avatar className="w-8 h-8">
-        <AvatarImage src={`http://127.0.0.1:8000${userProfile.user.pfp}`} />
+      <Avatar className="w-[24px] h-[24px]">
+        <AvatarImage src={avatarSrc} />
         <AvatarFallback>{initials}</AvatarFallback>
       </Avatar>
     );
@@ -25,8 +30,7 @@ export default function Navbar() {
 
   return (
     <div className="flex justify-center">
-      <ul className="nav-links px-5 py-2 transition-all shadow-sm hover:shadow-lg flex gap-8 absolute bottom-10">
-        {/* Navigation links */}
+      <ul className="nav-links px-5 py-2 transition-all shadow-sm hover:shadow-lg flex gap-8 fixed bottom-10">
         <li className="nav-link">
           <Link to="/">
             <House />
