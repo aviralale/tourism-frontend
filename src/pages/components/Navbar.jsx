@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { House, MessageCircle, Telescope, UserRound } from "lucide-react";
 import { Link } from "react-router-dom";
 import useAuthCheck from "@/utils/hooks/withAuthCheck";
@@ -7,7 +7,13 @@ import "./Navbar.css";
 
 export default function Navbar() {
   const { isAuthenticated, userProfile, isLoading } = useAuthCheck();
-  console.log(isAuthenticated);
+  const [avatarKey, setAvatarKey] = useState(0); // State to force re-render
+
+  useEffect(() => {
+    // Whenever isAuthenticated changes, force re-render by changing the key
+    setAvatarKey((prevKey) => prevKey + 1);
+  }, [isAuthenticated]);
+
   const renderAvatar = () => {
     if (!isAuthenticated || isLoading || !userProfile) {
       return <UserRound />;
@@ -21,7 +27,7 @@ export default function Navbar() {
       : "http://127.0.0.1:8000/media/user_avatar/default.jpg";
 
     return (
-      <Avatar className="w-[24px] h-[24px]">
+      <Avatar key={avatarKey} className="w-[24px] h-[24px]">
         <AvatarImage src={avatarSrc} />
         <AvatarFallback>{initials}</AvatarFallback>
       </Avatar>
@@ -46,9 +52,17 @@ export default function Navbar() {
             <Telescope />
           </Link>
         </li>
-        <li className="nav-link">
-          <Link to="/account">{renderAvatar()}</Link>
-        </li>
+        {isAuthenticated ? (
+          <li className="nav-link">
+            <Link to="/account">{renderAvatar()}</Link>
+          </li>
+        ) : (
+          <li className="nav-link">
+            <Link to="/account">
+              <UserRound />
+            </Link>
+          </li>
+        )}
       </ul>
     </div>
   );

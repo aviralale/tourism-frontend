@@ -43,21 +43,19 @@ export const loginUser = async (formData) => {
       }
     );
 
-    // Assuming response.data structure is { access: <token>, refresh: <token>, username: <username> }
     const { access, refresh, username } = response.data;
 
-    // Store tokens in localStorage
     localStorage.setItem("access_token", access);
     localStorage.setItem("refresh_token", refresh);
 
-    // Store username if available
     if (username) {
       localStorage.setItem("username", username);
     }
 
-    return response.data; // Return response data
+    return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.detail || "Login failed"); // Propagate specific error message
+    console.error("Login error:", error.response?.data || error.message);
+    throw new Error(error.response?.data?.detail || "Login failed");
   }
 };
 

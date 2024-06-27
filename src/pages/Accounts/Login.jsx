@@ -32,6 +32,7 @@ export default function Login() {
           toast.error("Failed to login. Please check your credentials.");
         }
       } catch (error) {
+        console.error("Login error:", error.message);
         setLoading(false);
         toast.error("Error: " + error.message);
         setErrors({
