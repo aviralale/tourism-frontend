@@ -14,4 +14,3 @@ export const validateReg = (formData) => {
     if (!formData.password) errors.password = "Password is required";
     return errors;
   };
-  
